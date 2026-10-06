@@ -1,0 +1,1280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#060911">
+<title>AQA Combined Science · Paper 1 Flashcards</title>
+<style>
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{height:100%;margin:0;overscroll-behavior:none}
+  body{
+    font-family:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    background:#060911;color:#e9edf9;overflow:hidden;
+  }
+  #app{
+    --accent:#22c55e;--accent2:#86efac;--glow:rgba(34,197,94,.4);--bg1:rgba(34,197,94,.09);
+    height:100dvh;display:flex;flex-direction:column;
+    background:
+      radial-gradient(760px 480px at 10% -8%,var(--bg1),transparent 62%),
+      radial-gradient(680px 420px at 102% 108%,var(--bg1),transparent 62%),
+      #060911;
+    transition:background .35s ease;
+  }
+  #app[data-s="chem"]{--accent:#f59e0b;--accent2:#fcd34d;--glow:rgba(245,158,11,.4);--bg1:rgba(245,158,11,.09)}
+  #app[data-s="phys"]{--accent:#38bdf8;--accent2:#a5b4fc;--glow:rgba(56,189,248,.4);--bg1:rgba(56,189,248,.09)}
+
+  .top{
+    display:flex;align-items:center;gap:14px;padding:10px 16px;flex-shrink:0;
+    border-bottom:1px solid rgba(255,255,255,.07);background:#0a0f1c;z-index:30;
+  }
+  .brand{display:flex;align-items:center;gap:10px;min-width:0}
+  .logo{
+    width:36px;height:36px;border-radius:11px;display:grid;place-items:center;font-size:18px;
+    background:linear-gradient(135deg,var(--accent),var(--accent2));
+    box-shadow:0 0 18px var(--glow);transition:.35s;flex-shrink:0;
+  }
+  .brand h1{font-size:14.5px;margin:0;white-space:nowrap;letter-spacing:.2px}
+  .brand p{margin:1px 0 0;font-size:11px;color:#8b96b4;white-space:nowrap}
+
+  .tabs{display:flex;gap:6px;margin-left:auto;background:rgba(255,255,255,.05);
+        padding:4px;border-radius:12px;border:1px solid rgba(255,255,255,.07)}
+  .tab{
+    border:0;background:transparent;color:#98a3c0;font:inherit;font-size:13px;font-weight:600;
+    padding:8px 14px;border-radius:9px;cursor:pointer;white-space:nowrap;
+    display:flex;align-items:center;gap:6px;
+    transition:background .15s,color .15s;
+  }
+  .tab:hover{color:#e9edf9;background:rgba(255,255,255,.06)}
+  .tab[aria-selected="true"]{
+    color:#04070f;background:linear-gradient(135deg,var(--accent),var(--accent2));
+    box-shadow:0 5px 16px -6px var(--glow);
+  }
+  .ibtn{
+    border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.05);color:#cfd7ea;
+    width:36px;height:36px;border-radius:10px;cursor:pointer;font-size:16px;
+    display:none;place-items:center;flex-shrink:0;
+  }
+  .ibtn:active{background:rgba(255,255,255,.14)}
+
+  .body{flex:1;display:flex;min-height:0}
+
+  .side{
+    width:250px;flex-shrink:0;border-right:1px solid rgba(255,255,255,.07);
+    overflow-y:auto;padding:12px 10px 40px;background:#080d18;
+    scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.15) transparent;
+  }
+  .side::-webkit-scrollbar{width:7px}
+  .side::-webkit-scrollbar-thumb{background:rgba(255,255,255,.14);border-radius:8px}
+  .sidehead{display:none}
+  .utitle{
+    font-size:10px;letter-spacing:1.3px;text-transform:uppercase;color:#5f6b8b;
+    font-weight:700;margin:14px 8px 6px;
+  }
+  .topic{
+    width:100%;display:flex;align-items:center;gap:9px;text-align:left;
+    border:1px solid transparent;background:transparent;color:#b9c3dc;font:inherit;
+    font-size:12.5px;padding:8px 9px;border-radius:9px;cursor:pointer;
+    transition:background .12s,color .12s;
+  }
+  .topic:hover{background:rgba(255,255,255,.055);color:#fff}
+  .topic[aria-current="true"]{
+    background:rgba(255,255,255,.09);border-color:rgba(255,255,255,.13);
+    color:#fff;font-weight:600;
+  }
+  .topic .nm{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .topic .ct{font-size:10.5px;color:#6b769a;font-variant-numeric:tabular-nums}
+  .ring{width:15px;height:15px;border-radius:50%;flex-shrink:0;position:relative}
+  .ring::after{content:"";position:absolute;inset:3.5px;border-radius:50%;background:#080d18}
+  .topic.special .ring::after{background:#080d18}
+
+  .stage{flex:1;min-width:0;display:flex;flex-direction:column;padding:14px 22px 16px;gap:10px}
+  .shead{display:flex;align-items:center;gap:14px;flex-wrap:wrap;flex-shrink:0}
+  .crumb{font-size:12.5px;color:#7c88a8;font-weight:600}
+  .crumb b{color:var(--accent2)}
+  .pwrap{margin-left:auto;display:flex;align-items:center;gap:9px}
+  .ptrack{width:150px;height:6px;border-radius:99px;background:rgba(255,255,255,.09);overflow:hidden}
+  .pfill{height:100%;width:0;border-radius:99px;
+    background:linear-gradient(90deg,var(--accent),var(--accent2));
+    transition:width .3s cubic-bezier(.2,.8,.2,1);box-shadow:0 0 10px var(--glow)}
+  .ptext{font-size:11.5px;color:#7c88a8;font-variant-numeric:tabular-nums;white-space:nowrap}
+
+  .cardwrap{flex:1;min-height:150px;position:relative}
+  .card{
+    position:absolute;inset:0;perspective:1600px;cursor:pointer;
+    contain:layout paint;
+  }
+  .cin{
+    position:relative;width:100%;height:100%;transform-style:preserve-3d;
+    transition:transform .32s cubic-bezier(.25,.85,.3,1);
+    will-change:transform;
+  }
+  .card.flip .cin{transform:rotateY(180deg)}
+  .face{
+    position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;
+    border-radius:18px;display:flex;overflow-y:auto;
+    border:1px solid rgba(255,255,255,.09);
+    background:linear-gradient(160deg,#161d32,#0d1221);
+    box-shadow:0 22px 50px -28px rgba(0,0,0,.9),inset 0 1px 0 rgba(255,255,255,.06);
+    scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.16) transparent;
+  }
+  .face::-webkit-scrollbar{width:7px}
+  .face::-webkit-scrollbar-thumb{background:rgba(255,255,255,.16);border-radius:8px}
+  .front{border-top:3px solid var(--accent)}
+  .back{transform:rotateY(180deg);border-top:3px solid var(--accent2);
+    background:linear-gradient(160deg,#1a2238,#0e1425)}
+  .fin{margin:auto;padding:26px 34px;width:100%;text-align:center}
+  .badge{
+    display:inline-block;font-size:10px;letter-spacing:1px;text-transform:uppercase;
+    font-weight:800;color:var(--accent2);background:rgba(255,255,255,.06);
+    padding:4px 11px;border-radius:99px;margin-bottom:16px;
+  }
+  .q{font-size:clamp(17px,2vw,25px);line-height:1.42;font-weight:600;margin:0}
+  .a{font-size:clamp(13.5px,1.3vw,17px);line-height:1.7;margin:0;color:#dbe3f7;text-align:left}
+  .a strong,.q strong{color:var(--accent2);font-weight:700}
+  .hint{display:block;margin-top:20px;font-size:11px;color:#5d688a}
+  kbd{background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.14);
+    border-radius:4px;padding:1px 5px;font-size:10px;font-family:inherit}
+
+  .flash{
+    position:absolute;inset:0;border-radius:18px;pointer-events:none;opacity:0;z-index:5;
+    box-shadow:inset 0 0 0 2px currentColor;
+  }
+
+  .row{display:flex;gap:8px;flex-shrink:0}
+  .btn{
+    border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.05);color:#dbe3f7;
+    font:inherit;font-size:13px;font-weight:600;padding:11px 16px;border-radius:11px;
+    cursor:pointer;flex:1;transition:background .12s,transform .08s;
+  }
+  .btn:hover{background:rgba(255,255,255,.1)}
+  .btn:active{transform:scale(.98)}
+  .btn.primary{
+    background:linear-gradient(135deg,var(--accent),var(--accent2));color:#05080f;
+    border-color:transparent;box-shadow:0 8px 20px -10px var(--glow);
+  }
+  .btn.primary:hover{filter:brightness(1.06)}
+  .mark.rev{border-color:rgba(244,114,182,.3);color:#f9a8d4}
+  .mark.rev:hover{background:rgba(244,114,182,.13)}
+  .mark.got{border-color:rgba(34,197,94,.3);color:#86efac}
+  .mark.got:hover{background:rgba(34,197,94,.13)}
+  .mark.on{background:rgba(255,255,255,.16);color:#fff}
+  .bar{display:flex;align-items:center;gap:8px;flex-shrink:0}
+  .cnt{font-size:11.5px;color:#7c88a8;font-variant-numeric:tabular-nums;margin-right:auto}
+  .tiny{flex:0 0 auto;padding:7px 12px;font-size:11.5px;border-radius:9px}
+
+  .empty{
+    position:absolute;inset:0;display:grid;place-items:center;text-align:center;color:#7c88a8;
+    border:1px dashed rgba(255,255,255,.14);border-radius:18px;padding:30px;
+  }
+  .empty h3{margin:0 0 6px;color:#cfd7ea;font-size:17px}
+  .empty p{margin:0;font-size:13px;line-height:1.6}
+
+  .bd{display:none}
+  @media(max-width:880px){
+    .brand p{display:none}
+    .ibtn{display:grid}
+    .top{flex-wrap:wrap;gap:8px;padding:10px 12px}
+    .tabs{order:3;width:100%;margin-left:0;overflow-x:auto}
+    .tab{flex:1;justify-content:center;padding:8px 10px}
+    .side{
+      position:fixed;top:0;left:0;bottom:0;z-index:60;width:280px;background:#0a0f1c;
+      transform:translateX(-102%);transition:transform .25s cubic-bezier(.2,.8,.2,1);
+      box-shadow:24px 0 50px -18px rgba(0,0,0,.9);
+    }
+    .side.open{transform:none}
+    .sidehead{display:flex;align-items:center;justify-content:space-between;
+      padding:0 4px 8px;margin-bottom:4px;border-bottom:1px solid rgba(255,255,255,.08)}
+    .sidehead h2{font-size:13.5px;margin:8px 0}
+    .sidehead .ibtn{display:grid;width:32px;height:32px}
+    .bd{display:block;position:fixed;inset:0;background:rgba(0,0,0,.62);z-index:55;
+      opacity:0;pointer-events:none;transition:opacity .22s}
+    .bd.on{opacity:1;pointer-events:auto}
+    .stage{padding:12px}
+    .fin{padding:20px 18px}
+  }
+  @media(prefers-reduced-motion:reduce){
+    .cin{transition:none!important}
+    .pfill{transition:none!important}
+  }
+</style>
+</head>
+<body>
+<div id="app" data-s="bio">
+
+  <header class="top">
+    <div class="brand">
+      <div class="logo" id="logo">🧬</div>
+      <div>
+        <h1>Paper 1 Flashcards</h1>
+        <p>AQA GCSE Combined Science · Trilogy</p>
+      </div>
+    </div>
+    <nav class="tabs" id="tabs" role="tablist"></nav>
+    <button class="ibtn" id="menuBtn" aria-label="Topics">☰</button>
+  </header>
+
+  <div class="body">
+    <aside class="side" id="side">
+      <div class="sidehead">
+        <h2>Topics</h2>
+        <button class="ibtn" id="closeBtn" aria-label="Close">✕</button>
+      </div>
+      <div id="topics"></div>
+    </aside>
+    <div class="bd" id="bd"></div>
+
+    <main class="stage">
+      <div class="shead">
+        <div class="crumb" id="crumb"></div>
+        <div class="pwrap">
+          <div class="ptrack"><div class="pfill" id="pfill"></div></div>
+          <span class="ptext" id="ptext">0 / 0</span>
+        </div>
+      </div>
+
+      <div class="cardwrap" id="cardwrap">
+        <div class="card" id="card">
+          <div class="cin" id="cin">
+            <div class="face front">
+              <div class="fin">
+                <span class="badge" id="bf">Question</span>
+                <p class="q" id="qt"></p>
+                <span class="hint">Tap the card or press <kbd>Space</kbd> to flip</span>
+              </div>
+            </div>
+            <div class="face back">
+              <div class="fin">
+                <span class="badge" id="bb">Answer</span>
+                <p class="a" id="at"></p>
+              </div>
+            </div>
+          </div>
+          <div class="flash" id="flash"></div>
+        </div>
+      </div>
+
+      <div class="row">
+        <button class="btn" id="prev">← Prev</button>
+        <button class="btn primary" id="flip">Flip</button>
+        <button class="btn" id="next">Next →</button>
+      </div>
+
+      <div class="row">
+        <button class="btn mark rev" id="revBtn">🔁 Need review <kbd>1</kbd></button>
+        <button class="btn mark got" id="gotBtn">✅ Got it <kbd>2</kbd></button>
+      </div>
+
+      <div class="bar">
+        <span class="cnt" id="cnt">1 / 1</span>
+        <button class="btn tiny" id="shuf">🔀 Shuffle</button>
+        <button class="btn tiny" id="reset">↺ Reset</button>
+      </div>
+    </main>
+  </div>
+</div>
+
+<script>
+/* =========================================================
+   1. DATA  (AQA Combined Science Trilogy 8464 · Paper 1)
+   ========================================================= */
+const SECTIONS = [
+{ id:"bio", title:"Biology", emoji:"🧬", units:[
+  { name:"Cell Biology", groups:[
+    { name:"Animal & Plant Cells", cards:[
+      ["What is a eukaryotic cell?","A cell with a **nucleus** and **membrane-bound organelles**. Animal and plant cells are eukaryotic."],
+      ["What is a prokaryotic cell?","A cell with **no nucleus** and **no membrane-bound organelles**. Bacteria are prokaryotic."],
+      ["What is the function of the nucleus?","Contains **DNA** that controls the cell's activities and codes for proteins."],
+      ["What is the function of the cytoplasm?","The site of **chemical reactions**, and where **ribosomes** are found."],
+      ["What is the function of the cell membrane?","Controls what **enters and leaves** the cell."],
+      ["What is the function of mitochondria?","The site of **aerobic respiration**, releasing energy for the cell."],
+      ["What is the function of ribosomes?","The site of **protein synthesis**."],
+      ["What is the function of chloroplasts?","Contain **chlorophyll** for **photosynthesis**. Found in plant cells only."],
+      ["What is the function of the cell wall?","Made of **cellulose**; provides **strength and support**. Found in plant cells only."],
+      ["What is the function of a permanent vacuole?","Contains **cell sap** and helps keep the cell **turgid**. Found in plant cells only."],
+      ["Name three structures found in a plant cell but not an animal cell.","**Cell wall**, **chloroplasts**, **permanent vacuole**."],
+      ["What is the function of plasmids in bacterial cells?","Small rings of **extra DNA** that can be passed between bacteria."]
+    ]},
+    { name:"Cell Specialisation", cards:[
+      ["What is cell differentiation?","The process by which a cell becomes **specialised** for its job."],
+      ["How is a sperm cell adapted to its function?","**Streamlined head** for swimming, **many mitochondria** for energy, and **enzymes** in the head to digest the egg membrane."],
+      ["How is a nerve cell adapted to its function?","**Long**, to carry electrical impulses over long distances, with **branched endings** to connect to other cells."],
+      ["How is a muscle cell adapted to its function?","Contains **protein fibres** that can contract, and **many mitochondria** for energy."],
+      ["How is a root hair cell adapted to its function?","**Large surface area** to absorb water and mineral ions efficiently."]
+    ]},
+    { name:"Microscopy", cards:[
+      ["What is the equation for magnification?","**Magnification = image size ÷ actual size**"],
+      ["Why do electron microscopes have a higher resolution than light microscopes?","They use **electrons**, which have a **shorter wavelength** than light, so they can resolve smaller objects."],
+      ["What is 1 mm in μm?","**1000 μm**"],
+      ["What is 1 μm in nm?","**1000 nm**"],
+      ["What is 1 nm in standard form?","**1 × 10⁻⁹ m**"],
+      ["What is 1 μm in standard form?","**1 × 10⁻⁶ m**"]
+    ]},
+    { name:"Mitosis & the Cell Cycle", cards:[
+      ["What are the three stages of the cell cycle?","**Interphase**, **Mitosis**, **Cytokinesis**."],
+      ["What happens during interphase?","The cell **grows**, **DNA replicates**, and **organelles are copied**."],
+      ["What happens during mitosis?","The **nucleus divides** and **chromosomes are pulled apart** to opposite ends of the cell."],
+      ["What happens during cytokinesis?","The **cytoplasm divides** and the cell membrane separates, forming **two identical cells**."],
+      ["Why is mitosis important?","For **growth**, **repair**, and **asexual reproduction**."],
+      ["How many chromosomes do human body cells have?","**46** (23 pairs)."],
+      ["Are the cells produced by mitosis genetically identical?","**Yes** — they are **diploid** and genetically identical."]
+    ]},
+    { name:"Stem Cells", cards:[
+      ["What is a stem cell?","An **undifferentiated cell** that can divide to produce **more stem cells** or **differentiated cells**."],
+      ["Where are embryonic stem cells found?","In the **early embryo** (blastocyst stage)."],
+      ["What can embryonic stem cells differentiate into?","**Any** type of cell."],
+      ["Where are adult stem cells found?","In **bone marrow**, **skin**, and **liver**."],
+      ["What can adult stem cells differentiate into?","**A few** cell types (e.g. blood cells from bone marrow)."],
+      ["What is a benefit of using stem cells in medicine?","They can be used to **replace damaged cells** (e.g. in diabetes, paralysis)."],
+      ["What is a risk of using stem cells?","**Tumour development** if cells divide uncontrollably."],
+      ["What is an ethical issue with embryonic stem cells?","The embryo is **destroyed** in the process, which some people believe is wrong."]
+    ]},
+    { name:"Active Transport", cards:[
+      ["What is active transport?","The movement of substances **against a concentration gradient** (from low to high concentration)."],
+      ["Does active transport require energy?","**Yes** — energy from **respiration**."],
+      ["What is the difference between diffusion and active transport?","Diffusion is **passive** (no energy) and goes **down** a concentration gradient. Active transport is **active** (requires energy) and goes **against** a concentration gradient."],
+      ["Give an example of active transport in plants.","**Root hair cells** absorbing **mineral ions** from the soil."],
+      ["Give an example of active transport in animals.","**Glucose** being absorbed from the gut into the blood."]
+    ]}
+  ]},
+  { name:"Organisation", groups:[
+    { name:"The Human Digestive System", cards:[
+      ["What is the function of the mouth?","**Mechanical digestion** (chewing) and **chemical digestion** (amylase breaks down starch)."],
+      ["What is the function of the oesophagus?","Carries food to the stomach via **peristalsis**."],
+      ["What is the function of the stomach?","**Churns** food and produces **protease** and **hydrochloric acid**."],
+      ["What is the function of the small intestine?","**Digestion** is completed and **absorption** of nutrients occurs."],
+      ["What is the function of the large intestine?","**Absorption of water** and formation of faeces."],
+      ["What is the function of the pancreas?","Produces **amylase**, **protease** and **lipase** enzymes."],
+      ["What is the function of the liver?","Produces **bile**, which **neutralises** stomach acid and **emulsifies** fats."],
+      ["What is the function of the gall bladder?","Stores **bile** before it is released into the small intestine."],
+      ["Which enzyme breaks down carbohydrates?","**Amylase** (produced in the mouth, pancreas and small intestine)."],
+      ["Which enzyme breaks down proteins?","**Protease** (produced in the stomach, pancreas and small intestine)."],
+      ["Which enzyme breaks down lipids?","**Lipase** (produced in the pancreas and small intestine)."],
+      ["What are the products of carbohydrate digestion?","**Simple sugars** (e.g. glucose)."],
+      ["What are the products of protein digestion?","**Amino acids**."],
+      ["What are the products of lipid digestion?","**Fatty acids** and **glycerol**."],
+      ["How is the small intestine adapted for absorption?","**Villi** increase surface area, **thin walls** give a short diffusion distance, and a **rich blood supply** maintains the concentration gradient."]
+    ]},
+    { name:"The Heart & Blood Vessels", cards:[
+      ["What is the function of the right atrium?","Receives **deoxygenated blood** from the vena cava."],
+      ["What is the function of the right ventricle?","Pumps **deoxygenated blood** to the lungs via the pulmonary artery."],
+      ["What is the function of the left atrium?","Receives **oxygenated blood** from the pulmonary vein."],
+      ["What is the function of the left ventricle?","Pumps **oxygenated blood** to the body via the aorta. It has a **thicker wall** because it pumps blood further."],
+      ["What is the function of the vena cava?","Brings **deoxygenated blood** from the body to the right atrium."],
+      ["What is the function of the pulmonary artery?","Carries **deoxygenated blood** from the right ventricle to the lungs."],
+      ["What is the function of the pulmonary vein?","Carries **oxygenated blood** from the lungs to the left atrium."],
+      ["What is the function of the aorta?","Carries **oxygenated blood** from the left ventricle to the body."],
+      ["What is the function of the coronary arteries?","Supply the **heart muscle** with oxygenated blood."],
+      ["What is the double circulatory system?","Blood passes through the heart **twice** for one complete circuit of the body."],
+      ["Why is a double circulatory system important?","It maintains **high blood pressure** and ensures **efficient delivery of oxygen** to the body."],
+      ["What is the function and structure of arteries?","Carry blood **away from the heart**. They have **thick, elastic walls** and a **narrow lumen**."],
+      ["What is the function and structure of veins?","Carry blood **towards the heart**. They have **thin walls**, a **large lumen** and **valves** to prevent backflow."],
+      ["What is the function and structure of capillaries?","Allow **exchange of substances** between blood and tissues. They have **thin walls** (one cell thick) and a **narrow lumen**."],
+      ["What are the components of blood?","**Red blood cells**, **white blood cells**, **platelets** and **plasma**."],
+      ["What is the function of red blood cells?","Carry **oxygen** using **haemoglobin**. They have no nucleus, giving more space."],
+      ["What is the function of white blood cells?","Defend against **pathogens** by **phagocytosis** or by producing **antibodies**."],
+      ["What is the function of platelets?","Help blood to **clot** at wounds."],
+      ["What is the function of plasma?","Carries **dissolved substances** (glucose, amino acids, hormones, CO₂)."],
+      ["What is the equation for calculating rate of blood flow?","**Rate = volume of blood ÷ time**"]
+    ]},
+    { name:"Cancer", cards:[
+      ["What is cancer?","The result of **uncontrolled cell division** and **tumour formation**."],
+      ["What is a benign tumour?","A tumour that **grows slowly**, is **contained**, and does **not spread**."],
+      ["What is a malignant tumour?","A tumour that **grows quickly**, **invades** other tissues, and can **spread** (metastasise)."],
+      ["What is a risk factor for cancer?","Anything that increases the chance of developing cancer, e.g. **tobacco smoke**, **ionising radiation**, **UV light**."],
+      ["What is the role of ionising radiation in cancer?","It can **damage DNA** and cause mutations that lead to cancer."],
+      ["How can cancer be treated?","**Surgery**, **radiotherapy**, **chemotherapy** and **targeted drug therapy**."]
+    ]}
+  ]},
+  { name:"Infection & Response", groups:[
+    { name:"Protist Diseases", cards:[
+      ["What is malaria caused by?","A **protist** called **Plasmodium**."],
+      ["How is malaria transmitted?","By the **female mosquito**, which acts as a **vector**."],
+      ["What is a vector?","An organism that **carries and transmits** a pathogen without being infected itself."],
+      ["What are the symptoms of malaria?","**Fever**, **chills**, **headaches** and **nausea**."],
+      ["How can malaria be prevented?","**Mosquito nets**, **insect repellent**, **draining stagnant water** and **antimalarial drugs**."],
+      ["What is the life cycle of the malaria protist?","Mosquito bites human → protist enters the blood → infects **red blood cells** → mosquito bites infected human → protist reproduces in the mosquito."]
+    ]},
+    { name:"Vaccination", cards:[
+      ["What is a vaccine?","A preparation containing **dead or inactive pathogens** (antigens)."],
+      ["How does a vaccine work?","It stimulates **white blood cells** to produce **antibodies** and **memory cells**."],
+      ["What are memory cells?","White blood cells that **remain in the body** and respond **rapidly** to future infections."],
+      ["Why is a booster vaccine sometimes needed?","To **increase the number of memory cells** and maintain immunity."],
+      ["What is herd immunity?","When a **large proportion** of the population is vaccinated, reducing the spread of the pathogen and protecting those who are not vaccinated."],
+      ["What is the difference between a vaccine and a treatment?","A vaccine **prevents** disease; a treatment **cures** or manages an existing disease."]
+    ]}
+  ]},
+  { name:"Bioenergetics", groups:[
+    { name:"Aerobic & Anaerobic Respiration", cards:[
+      ["What is the word equation for aerobic respiration?","**Glucose + Oxygen → Carbon dioxide + Water**"],
+      ["What is the balanced symbol equation for aerobic respiration?","**C₆H₁₂O₆ + 6O₂ → 6CO₂ + 6H₂O**"],
+      ["Where does aerobic respiration occur?","In the **mitochondria**."],
+      ["What is the word equation for anaerobic respiration in muscles?","**Glucose → Lactic acid**"],
+      ["What is the word equation for anaerobic respiration in yeast?","**Glucose → Ethanol + Carbon dioxide**"],
+      ["What is fermentation?","Anaerobic respiration in **yeast**, producing **ethanol** and **CO₂**."],
+      ["Why does anaerobic respiration release less energy than aerobic respiration?","Glucose is **not completely broken down**; lactic acid still contains **chemical energy**."],
+      ["What is oxygen debt?","The **extra oxygen** needed after exercise to **break down lactic acid**."],
+      ["How is lactic acid removed?","Blood transports it to the **liver**, where it is converted back to **glucose**."]
+    ]}
+  ]}
+]},
+{ id:"chem", title:"Chemistry", emoji:"⚗️", units:[
+  { name:"Atomic Structure & the Periodic Table", groups:[
+    { name:"Relative Atomic Mass", cards:[
+      ["What is relative atomic mass (Ar)?","The **weighted average** mass of all the **isotopes** of an element, compared to **1/12 of a carbon-12 atom**."],
+      ["What is an isotope?","Atoms of the same element with the **same number of protons** but **different numbers of neutrons**."],
+      ["How do you calculate relative atomic mass from isotope abundances?","**(Abundance₁ × Mass₁) + (Abundance₂ × Mass₂) ÷ Total abundance**"]
+    ]},
+    { name:"Development of the Periodic Table", cards:[
+      ["How did Mendeleev arrange the periodic table?","In order of **atomic weight**, but he **left gaps** for undiscovered elements."],
+      ["Why did Mendeleev leave gaps?","To keep elements with **similar properties** in the same group."],
+      ["How is the modern periodic table arranged?","In order of **atomic number** (number of protons)."]
+    ]},
+    { name:"Group 1", cards:[
+      ["What are Group 1 elements called?","**Alkali metals**."],
+      ["What are the properties of Group 1 metals?","**Soft**, **low density**, and they **react vigorously with water**."],
+      ["What happens to reactivity down Group 1?","It **increases**."],
+      ["Why does reactivity increase down Group 1?","The outer electron is **further from the nucleus** and feels **less electrostatic attraction**, so it is **easier to lose**."],
+      ["What happens to melting and boiling points down Group 1?","They **decrease**."],
+      ["What is the word equation for lithium reacting with water?","**Lithium + Water → Lithium hydroxide + Hydrogen**"],
+      ["What is the balanced symbol equation for sodium reacting with water?","**2Na + 2H₂O → 2NaOH + H₂**"]
+    ]}
+  ]},
+  { name:"Bonding, Structure & Properties", groups:[
+    { name:"Ionic Bonding", cards:[
+      ["What is an ionic bond?","The **electrostatic attraction** between **oppositely charged ions**."],
+      ["How is an ionic bond formed?","By the **transfer of electrons** from a **metal** to a **non-metal**."],
+      ["What is a cation?","A **positively charged ion** (a metal loses electrons)."],
+      ["What is an anion?","A **negatively charged ion** (a non-metal gains electrons)."],
+      ["What is the structure of an ionic compound?","A **giant ionic lattice**."],
+      ["Describe the dot-and-cross diagram for sodium chloride.","Na⁺ [2,8]⁺ and Cl⁻ [2,8,8]⁻ — one electron is transferred from Na to Cl."]
+    ]},
+    { name:"Covalent Bonding", cards:[
+      ["What is a covalent bond?","The **sharing of electrons** between **non-metal atoms**."],
+      ["What is a single covalent bond?","**One pair** of shared electrons."],
+      ["What is a double covalent bond?","**Two pairs** of shared electrons."],
+      ["Draw a dot-and-cross diagram for water (H₂O).","O in the centre bonded to two H atoms — **two shared pairs** (one per H)."],
+      ["Draw a dot-and-cross diagram for methane (CH₄).","C in the centre with four H atoms, each sharing **one pair**."],
+      ["Draw a dot-and-cross diagram for carbon dioxide (CO₂).","O=C=O — **two shared pairs** between C and each O."]
+    ]},
+    { name:"Properties of Ionic Compounds", cards:[
+      ["Why do ionic compounds have high melting points?","**Strong electrostatic forces** between the ions in the giant lattice require **lots of energy** to overcome."],
+      ["Do ionic compounds conduct electricity when solid?","**No** — the ions are **not free to move**."],
+      ["Do ionic compounds conduct electricity when molten or dissolved?","**Yes** — the ions are **free to move** and carry charge."]
+    ]},
+    { name:"Properties of Small Molecules", cards:[
+      ["What are intermolecular forces?","**Weak forces** between molecules."],
+      ["Why do small molecules have low melting and boiling points?","**Weak intermolecular forces** require **little energy** to overcome."],
+      ["Do small molecules conduct electricity?","**No** — they have **no overall charge** and **no free electrons**."]
+    ]},
+    { name:"Polymers", cards:[
+      ["What is a polymer?","A **large molecule** made from many **repeating units** (monomers)."],
+      ["What are the forces between polymer chains?","**Weak intermolecular forces**."],
+      ["Why do polymers have relatively low melting points?","Because of the **weak intermolecular forces** between the chains."],
+      ["Are polymers solid at room temperature?","**Yes** — the chains are **long** and **entangled**."]
+    ]},
+    { name:"Metals as Conductors", cards:[
+      ["Why do metals conduct electricity?","They have **delocalised electrons** that are **free to move**."],
+      ["Why do metals conduct heat?","**Delocalised electrons** transfer **kinetic energy**."],
+      ["What is the structure of a metal?","A **giant metallic lattice** of **positive ions** in a sea of **delocalised electrons**."]
+    ]},
+    { name:"Diamond & Graphite", cards:[
+      ["What is the structure of diamond?","Each carbon atom forms **four strong covalent bonds** in a **giant covalent structure**."],
+      ["Why is diamond very hard?","The **strong covalent bonds** require **lots of energy** to break."],
+      ["Does diamond conduct electricity?","**No** — all its outer electrons are **used in bonding**."],
+      ["What is the structure of graphite?","Layers of carbon atoms, each bonded to **three others**, with **weak forces** between the layers."],
+      ["Why is graphite soft?","The **layers can slide over each other**."],
+      ["Does graphite conduct electricity?","**Yes** — each carbon atom has **one delocalised electron**."],
+      ["Why does graphite have a high melting point?","The **covalent bonds within the layers** are very strong."]
+    ]}
+  ]},
+  { name:"Quantitative Chemistry", groups:[
+    { name:"Relative Formula Mass", cards:[
+      ["What is relative formula mass (Mr)?","The **sum of the relative atomic masses** of all the atoms in a formula."],
+      ["Calculate the Mr of H₂O.","(1 × 2) + 16 = **18**"],
+      ["Calculate the Mr of CO₂.","12 + (16 × 2) = **44**"],
+      ["Calculate the Mr of CaCO₃.","40 + 12 + (16 × 3) = **100**"]
+    ]},
+    { name:"Chemical Measurements", cards:[
+      ["What is uncertainty?","The **range of values** within which the true value lies."],
+      ["How do you calculate uncertainty?","**± half the smallest division** on the measuring instrument."],
+      ["What is the uncertainty of a balance reading to 0.01 g?","**± 0.005 g**"]
+    ]},
+    { name:"Moles", cards:[
+      ["What is a mole?","The amount of substance that contains **6.02 × 10²³ particles** (Avogadro's number)."],
+      ["What is the equation for moles?","**Moles = Mass ÷ Mr**"],
+      ["How many moles are in 36 g of water (Mr = 18)?","36 ÷ 18 = **2 moles**"],
+      ["What is the mass of 0.5 moles of CO₂ (Mr = 44)?","0.5 × 44 = **22 g**"]
+    ]},
+    { name:"Using Moles to Balance Equations", cards:[
+      ["How do you use moles to balance an equation?","Calculate the **moles of each reactant and product**, then find the **simplest whole-number ratio**."],
+      ["8 g of methane (Mr = 16) reacts with 32 g of oxygen (Mr = 32). What is the balanced equation?","Moles CH₄ = 0.5, moles O₂ = 1 → ratio 1:2 → **CH₄ + 2O₂ → CO₂ + 2H₂O**"]
+    ]},
+    { name:"Limiting Reactants", cards:[
+      ["What is a limiting reactant?","The reactant that is **used up first** and **limits the amount of product formed**."],
+      ["How do you identify the limiting reactant?","Calculate the **moles of each reactant** and compare them to the **stoichiometric ratio**."],
+      ["4 g of H₂ (Mr = 2) reacts with 32 g of O₂ (Mr = 32). Which is limiting?","Moles H₂ = 2, moles O₂ = 1; the ratio needed is 2:1 → **O₂ is limiting**."]
+    ]}
+  ]},
+  { name:"Chemical Changes", groups:[
+    { name:"Extraction of Metals & Reduction", cards:[
+      ["What is the reactivity series?","A list of metals in order of **reactivity**."],
+      ["Which metals are extracted by electrolysis?","Metals **above carbon** in the reactivity series."],
+      ["Which metals are extracted by reduction with carbon?","Metals **below carbon** in the reactivity series."],
+      ["What is oxidation in terms of electrons?","**Loss of electrons** (OIL RIG)."],
+      ["What is reduction in terms of electrons?","**Gain of electrons** (OIL RIG)."],
+      ["What is the equation for the reduction of iron oxide?","**Fe₂O₃ + 3CO → 2Fe + 3CO₂**"]
+    ]},
+    { name:"Neutralisation & Salt Production", cards:[
+      ["What is the general equation for neutralisation?","**Acid + Base → Salt + Water**"],
+      ["What salt is produced from hydrochloric acid?","**Chloride** salts."],
+      ["What salt is produced from sulfuric acid?","**Sulfate** salts."],
+      ["What salt is produced from nitric acid?","**Nitrate** salts."],
+      ["What is the equation for hydrochloric acid + sodium hydroxide?","**HCl + NaOH → NaCl + H₂O**"],
+      ["What is the ionic equation for neutralisation?","**H⁺(aq) + OH⁻(aq) → H₂O(l)**"]
+    ]},
+    { name:"Soluble Salts", cards:[
+      ["How do you prepare a soluble salt?","Add **excess insoluble base** to the acid, **filter** to remove the excess, then **evaporate** and **crystallise**."],
+      ["Why is excess base added?","To ensure **all the acid is neutralised**."],
+      ["Why is the mixture filtered?","To remove the **unreacted excess base**."]
+    ]},
+    { name:"The pH Scale & Neutralisation", cards:[
+      ["What is the pH scale?","A measure of the **concentration of H⁺ ions**."],
+      ["What is the pH of a strong acid?","**1–3**"],
+      ["What is the pH of a weak acid?","**4–6**"],
+      ["What is the pH of a neutral solution?","**7**"],
+      ["What is the pH of a weak alkali?","**8–10**"],
+      ["What is the pH of a strong alkali?","**11–14**"]
+    ]},
+    { name:"Strong & Weak Acids", cards:[
+      ["What is a strong acid?","An acid that is **completely ionised** in aqueous solution."],
+      ["What is a weak acid?","An acid that is **partially ionised** in aqueous solution."],
+      ["Give an example of a strong acid.","**Hydrochloric acid (HCl)**"],
+      ["Give an example of a weak acid.","**Ethanoic acid (CH₃COOH)**"],
+      ["Why does a strong acid have a lower pH than a weak acid of the same concentration?","Strong acids release **more H⁺ ions**."],
+      ["Why does a strong acid react faster than a weak acid?","The higher concentration of **H⁺ ions** means **more frequent collisions**."]
+    ]},
+    { name:"Electrolysis of Aqueous Solutions", cards:[
+      ["What is electrolysis?","The **breakdown of a compound** using **electricity**."],
+      ["What is the cathode?","The **negative electrode**, where **reduction** occurs."],
+      ["What is the anode?","The **positive electrode**, where **oxidation** occurs."],
+      ["What is produced at the cathode in aqueous solutions?","**Hydrogen** (if the metal is more reactive than hydrogen) or the **metal**."],
+      ["What is produced at the anode in aqueous solutions?","**Oxygen** — unless a halide is present, in which case the **halogen** is produced."],
+      ["What is produced at the cathode in electrolysis of copper sulfate solution?","**Copper**"],
+      ["What is produced at the anode in electrolysis of copper sulfate solution?","**Oxygen**"],
+      ["What is produced at the cathode in electrolysis of sodium chloride solution?","**Hydrogen**"],
+      ["What is produced at the anode in electrolysis of sodium chloride solution?","**Chlorine**"]
+    ]},
+    { name:"Half Equations", cards:[
+      ["What is a half equation?","An equation showing the **reaction at one electrode**."],
+      ["Write the half equation for the reduction of copper ions.","**Cu²⁺ + 2e⁻ → Cu**"],
+      ["Write the half equation for the oxidation of chloride ions.","**2Cl⁻ → Cl₂ + 2e⁻**"],
+      ["Write the half equation for the reduction of hydrogen ions.","**2H⁺ + 2e⁻ → H₂**"],
+      ["Write the half equation for the oxidation of oxide ions.","**2O²⁻ → O₂ + 4e⁻**"]
+    ]}
+  ]},
+  { name:"Energy Changes", groups:[
+    { name:"Reaction Profiles", cards:[
+      ["What is an exothermic reaction?","A reaction that **releases energy** to the surroundings (temperature increases)."],
+      ["What is an endothermic reaction?","A reaction that **absorbs energy** from the surroundings (temperature decreases)."],
+      ["What is activation energy?","The **minimum energy** required for a reaction to start."],
+      ["Describe the reaction profile of an exothermic reaction.","The reactants are **higher** than the products; energy is released to the surroundings."],
+      ["Describe the reaction profile of an endothermic reaction.","The products are **higher** than the reactants; energy is absorbed from the surroundings."]
+    ]},
+    { name:"Energy Changes of Reactions", cards:[
+      ["What is bond energy?","The energy required to **break** a bond, or released when a bond **forms**."],
+      ["What is the equation for energy change using bond energies?","**Energy change = energy to break bonds (reactants) − energy released when bonds form (products)**"],
+      ["If the energy to break bonds is greater than the energy released, is the reaction exothermic or endothermic?","**Endothermic**"],
+      ["If the energy released is greater than the energy to break bonds, is the reaction exothermic or endothermic?","**Exothermic**"],
+      ["Bonds broken = 1000 kJ, bonds formed = 1200 kJ. What is the energy change?","1000 − 1200 = **−200 kJ (exothermic)**"]
+    ]}
+  ]}
+]},
+{ id:"phys", title:"Physics", emoji:"⚡", units:[
+  { name:"Energy", groups:[
+    { name:"Energy Transfers in a System", cards:[
+      ["What are the eight energy stores?","**Thermal**, **kinetic**, **gravitational potential**, **elastic potential**, **chemical**, **magnetic**, **electrostatic**, **nuclear**."],
+      ["What are the four energy transfer pathways?","**Mechanical**, **electrical**, **heating**, **radiation**."],
+      ["Describe the energy transfer in a kettle.","**Electrical** → **Thermal** (in the water)."],
+      ["Describe the energy transfer in a falling object.","**Gravitational potential** → **Kinetic**."],
+      ["Describe the energy transfer in a battery-powered torch.","**Chemical** → **Electrical** → **Light** + **Thermal**."],
+      ["What is the principle of conservation of energy?","Energy cannot be **created or destroyed**, only **transferred** or **dissipated**."]
+    ]},
+    { name:"Efficiency", cards:[
+      ["What is the equation for efficiency?","**Efficiency = useful output energy ÷ total input energy**"],
+      ["What is the equation for efficiency using power?","**Efficiency = useful power output ÷ total power input**"],
+      ["A motor uses 500 J of energy and transfers 350 J usefully. What is the efficiency?","350 ÷ 500 = **0.7 or 70%**"],
+      ["How can unwanted energy transfers be reduced?","By **lubrication** (reduces friction) and **thermal insulation** (reduces heat loss)."]
+    ]},
+    { name:"National & Global Energy Resources", cards:[
+      ["What is a renewable energy resource?","An energy resource that is **replenished** as it is used."],
+      ["Give three examples of renewable energy resources.","**Solar**, **wind**, **hydroelectric** (also wave, tidal, geothermal, biomass)."],
+      ["What is a non-renewable energy resource?","An energy resource that will **run out** and cannot be replenished."],
+      ["Give three examples of non-renewable energy resources.","**Coal**, **oil**, **natural gas** (also nuclear fuel)."],
+      ["What are the advantages of renewable energy?","**No greenhouse gases** and they are **sustainable**."],
+      ["What are the disadvantages of renewable energy?","**Unreliable** (weather-dependent), **visual pollution**, **high initial cost**."]
+    ]}
+  ]},
+  { name:"Electricity", groups:[
+    { name:"Resistors", cards:[
+      ["What is Ohm's Law?","**V = IR** (voltage = current × resistance)."],
+      ["What is an ohmic conductor?","A conductor where **current is directly proportional to potential difference** (at constant temperature)."],
+      ["What happens to the resistance of a filament lamp as temperature increases?","**Resistance increases**."],
+      ["Why does resistance increase in a filament lamp?","The **ions vibrate more**, making it harder for electrons to flow."],
+      ["What is a diode?","A component that allows current to flow in **one direction only**."],
+      ["What is the resistance of a diode in reverse?","**Very high** (almost infinite)."]
+    ]},
+    { name:"Mains Electricity", cards:[
+      ["What colour is the live wire?","**Brown**"],
+      ["What colour is the neutral wire?","**Blue**"],
+      ["What colour is the earth wire?","**Green and yellow**"],
+      ["What is the function of the live wire?","Carries **alternating current** at **230 V**."],
+      ["What is the function of the neutral wire?","Completes the circuit at **0 V**."],
+      ["What is the function of the earth wire?","A **safety** wire that prevents electric shock."],
+      ["What is the frequency of UK mains electricity?","**50 Hz**"],
+      ["What is the voltage of UK mains electricity?","**230 V**"],
+      ["What is the function of a fuse?","It **melts** if the current is too high, breaking the circuit."],
+      ["What is the function of a circuit breaker?","It **trips** if the current is too high, breaking the circuit. It can be reset."]
+    ]},
+    { name:"Power", cards:[
+      ["What is the equation for power using voltage and current?","**P = VI**"],
+      ["What is the equation for power using current and resistance?","**P = I²R**"],
+      ["A 12 V battery supplies 2 A. What is the power?","12 × 2 = **24 W**"],
+      ["A current of 3 A flows through a 4 Ω resistor. What is the power?","3² × 4 = **36 W**"]
+    ]},
+    { name:"Energy Transfers in Everyday Appliances", cards:[
+      ["What is the equation for energy transferred?","**E = Pt** (energy = power × time)"],
+      ["What is the equation for energy transferred by charge?","**E = QV** (energy = charge × voltage)"],
+      ["A 2000 W kettle is on for 60 seconds. How much energy is transferred?","2000 × 60 = **120,000 J**"],
+      ["A charge of 50 C flows through a 12 V battery. How much energy is transferred?","50 × 12 = **600 J**"]
+    ]},
+    { name:"The National Grid", cards:[
+      ["What is the National Grid?","A system of **cables** and **transformers** that distributes electricity."],
+      ["What is the function of a step-up transformer?","**Increases voltage** and **decreases current** for transmission."],
+      ["What is the function of a step-down transformer?","**Decreases voltage** and **increases current** for use in homes."],
+      ["Why is electricity transmitted at high voltage?","To **reduce energy loss** (less heating in the cables due to the lower current)."]
+    ]}
+  ]},
+  { name:"Particle Model of Matter", groups:[
+    { name:"Density of Materials", cards:[
+      ["What is the equation for density?","**Density = Mass ÷ Volume**"],
+      ["What is the unit of density?","**kg/m³** or **g/cm³**"],
+      ["How do you measure the density of a regular solid?","Measure the **mass** with a balance, measure the **dimensions** and calculate volume, then use ρ = m/V."],
+      ["How do you measure the density of an irregular solid?","Measure the **mass** with a balance, use a **displacement can** to find the volume, then use ρ = m/V."],
+      ["How do you measure the density of a liquid?","Measure the **mass** of an empty beaker, add liquid and measure the new mass, find the volume with a **measuring cylinder**, then use ρ = m/V."],
+      ["What is the density of water?","**1000 kg/m³** or **1 g/cm³**"]
+    ]},
+    { name:"Changes of State", cards:[
+      ["What is melting?","**Solid → Liquid** (energy absorbed)."],
+      ["What is boiling?","**Liquid → Gas** (energy absorbed)."],
+      ["What is condensing?","**Gas → Liquid** (energy released)."],
+      ["What is freezing?","**Liquid → Solid** (energy released)."],
+      ["What happens to temperature during a change of state?","It **remains constant**."],
+      ["Why does temperature remain constant during a change of state?","Energy is used to **break intermolecular bonds**, not to increase kinetic energy."]
+    ]},
+    { name:"Internal Energy", cards:[
+      ["What is internal energy?","The total **kinetic and potential energy** of all the particles in a system."],
+      ["What happens to internal energy when a substance is heated?","It **increases**."],
+      ["What happens to internal energy during a change of state?","It **increases** (potential energy increases while kinetic energy stays constant)."]
+    ]},
+    { name:"Specific Heat Capacity", cards:[
+      ["What is specific heat capacity?","The energy required to raise the temperature of **1 kg** of a substance by **1 °C**."],
+      ["What is the equation for specific heat capacity?","**ΔE = mcΔθ**"],
+      ["What does each symbol mean in ΔE = mcΔθ?","ΔE = energy (J), m = mass (kg), c = specific heat capacity (J/kg°C), Δθ = temperature change (°C)."],
+      ["A 2 kg block of aluminium (c = 900 J/kg°C) is heated from 20 °C to 70 °C. How much energy is needed?","2 × 900 × 50 = **90,000 J**"],
+      ["Describe the required practical for specific heat capacity.","Measure the **mass** of the block, measure the **initial temperature**, heat with an **electric heater** for a set time, measure the **final temperature**, calculate the **energy supplied** (E = Pt), then use c = E ÷ (mΔθ)."]
+    ]},
+    { name:"Specific Latent Heat", cards:[
+      ["What is specific latent heat?","The energy required to **change the state** of **1 kg** of a substance **without changing its temperature**."],
+      ["What is the equation for specific latent heat?","**E = mL**"],
+      ["What is specific latent heat of fusion?","The energy to change **solid → liquid** (melting)."],
+      ["What is specific latent heat of vaporisation?","The energy to change **liquid → gas** (boiling)."],
+      ["A 0.5 kg block of ice melts. If Lf = 334,000 J/kg, how much energy is absorbed?","0.5 × 334,000 = **167,000 J**"],
+      ["On a heating graph, what does a flat line represent?","A **change of state** — energy is being used to break bonds, not to increase temperature."]
+    ]}
+  ]},
+  { name:"Atomic Structure", groups:[
+    { name:"Radioactive Decay & Nuclear Radiation", cards:[
+      ["What is radioactive decay?","The **random** and **spontaneous** breakdown of an unstable nucleus."],
+      ["What is alpha radiation?","A **helium nucleus** (2 protons, 2 neutrons)."],
+      ["What is the charge of alpha radiation?","**+2**"],
+      ["What is the penetrating power of alpha radiation?","Stopped by **paper** or a few cm of air."],
+      ["What is the ionising power of alpha radiation?","**Very high**."],
+      ["What is beta radiation?","A **fast-moving electron**."],
+      ["What is the charge of beta radiation?","**−1**"],
+      ["What is the penetrating power of beta radiation?","Stopped by a few mm of **aluminium**."],
+      ["What is the ionising power of beta radiation?","**Medium**."],
+      ["What is gamma radiation?","A **high-energy electromagnetic wave**."],
+      ["What is the charge of gamma radiation?","**0**"],
+      ["What is the penetrating power of gamma radiation?","Stopped by **thick lead** or concrete."],
+      ["What is the ionising power of gamma radiation?","**Low**."],
+      ["What is a use of alpha radiation?","**Smoke detectors**."],
+      ["What is a use of beta radiation?","**Thickness monitoring** in paper production."],
+      ["What is a use of gamma radiation?","**Sterilising medical equipment** and **cancer treatment**."]
+    ]},
+    { name:"Nuclear Equations", cards:[
+      ["What happens to the mass number and atomic number during alpha decay?","The mass number **decreases by 4** and the atomic number **decreases by 2**."],
+      ["What happens to the mass number and atomic number during beta decay?","The mass number **stays the same** and the atomic number **increases by 1**."],
+      ["What happens during gamma decay?","**No change** to the mass number or atomic number."],
+      ["Write the nuclear equation for the alpha decay of radium-226.","**²²⁶₈₈Ra → ²²²₈₆Rn + ⁴₂He**"],
+      ["Write the nuclear equation for the beta decay of carbon-14.","**¹⁴₆C → ¹⁴₇N + ⁰₋₁e**"]
+    ]},
+    { name:"Half-Lives & Random Decay", cards:[
+      ["What is half-life?","The time for the **number of radioactive nuclei** to halve, or for the **count rate** to halve."],
+      ["Why is radioactive decay described as random?","You cannot predict **which nucleus** will decay or **when** it will decay."],
+      ["A sample has a count rate of 800 Bq. After 30 minutes it is 100 Bq. What is the half-life?","800 → 400 → 200 → 100 = 3 half-lives, so 30 ÷ 3 = **10 minutes**."],
+      ["A sample has a half-life of 5 days. What fraction remains after 20 days?","20 ÷ 5 = 4 half-lives, so **(1/2)⁴ = 1/16** remains."],
+      ["What is the equation for activity?","**A = A₀ × (1/2)ⁿ**, where n = number of half-lives."],
+      ["What is background radiation?","**Low-level radiation** from natural sources (e.g. rocks, cosmic rays)."],
+      ["Why must background radiation be subtracted?","To get the **true count rate** from the source."]
+    ]}
+  ]}
+]}
+];
+
+/* =========================================================
+   2. PRECOMPUTE
+   ========================================================= */
+const esc = s => String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+const rich = s => esc(s).replace(/\*\*(.+?)\*\*/g,"<strong>$1</strong>");
+
+const byId       = new Map();
+const bySection  = {};
+const byGroup    = {};
+const SEC        = {};
+
+SECTIONS.forEach(sec=>{
+  SEC[sec.id] = sec;
+  bySection[sec.id] = [];
+  byGroup[sec.id] = new Map();
+
+  sec.units.forEach(u=>{
+    u.groups.forEach(g=>{
+      const list = [];
+      g.cards.forEach((c,i)=>{
+        const card = {
+          id : sec.id + "|" + g.name + "|" + i,
+          sec: sec.id,
+          unit: u.name,
+          grp : g.name,
+          qHtml: rich(c[0]),
+          aHtml: rich(c[1])
+        };
+        byId.set(card.id, card);
+        list.push(card);
+        bySection[sec.id].push(card);
+      });
+      byGroup[sec.id].set(g.name, list);
+    });
+  });
+});
+
+/* =========================================================
+   3. STATE
+   ========================================================= */
+const STORE = "aqa-p1-fast-v4";
+let status = Object.create(null);
+const S = {
+  sec:"bio",
+  filter:"all",
+  deck:[],
+  i:0,
+  flipped:false,
+  shuffled:false
+};
+
+/* =========================================================
+   4. DOM CACHE
+   ========================================================= */
+const $ = id => document.getElementById(id);
+const D = {
+  app:$("app"), logo:$("logo"), tabs:$("tabs"), topics:$("topics"),
+  side:$("side"), bd:$("bd"), crumb:$("crumb"),
+  pfill:$("pfill"), ptext:$("ptext"),
+  card:$("card"), cin:$("cin"), flash:$("flash"),
+  bf:$("bf"), bb:$("bb"), qt:$("qt"), at:$("at"),
+  cnt:$("cnt"), prev:$("prev"), next:$("next"), flip:$("flip"),
+  revBtn:$("revBtn"), gotBtn:$("gotBtn"), shuf:$("shuf"), reset:$("reset"),
+  cardwrap:$("cardwrap")
+};
+const sideRefs = new Map();
+
+/* =========================================================
+   5. PERSISTENCE  (FULL SESSION SAVE / RESTORE)
+   ========================================================= */
+let saveTimer = 0;
+let dirty = false;
+
+function writeNow(){
+  if(saveTimer){ clearTimeout(saveTimer); saveTimer = 0; }
+  if(!dirty) return;
+  try{
+    localStorage.setItem(STORE, JSON.stringify({
+      v: 4,
+      s: status,
+      sec: S.sec,
+      filter: S.filter,
+      shuffled: S.shuffled,
+      i: S.i
+    }));
+    dirty = false;
+  }catch(e){}
+}
+
+function save(){
+  dirty = true;
+  if(saveTimer) return;
+  saveTimer = setTimeout(()=>{ saveTimer = 0; writeNow(); }, 180);
+}
+
+function load(){
+  try{
+    const raw = localStorage.getItem(STORE);
+    if(!raw) return;
+    const d = JSON.parse(raw);
+    if(!d) return;
+
+    if(d.s && typeof d.s === "object") status = d.s;
+    if(d.sec && SEC[d.sec]) S.sec = d.sec;
+
+    if(d.filter){
+      const valid = d.filter === "all" || d.filter === "review"
+                    || (byGroup[S.sec] && byGroup[S.sec].has(d.filter));
+      if(valid) S.filter = d.filter;
+    }
+    if(typeof d.shuffled === "boolean") S.shuffled = d.shuffled;
+    if(typeof d.i === "number" && d.i >= 0) S.i = d.i;
+  }catch(e){}
+}
+
+window.addEventListener("pagehide", writeNow);
+window.addEventListener("beforeunload", writeNow);
+document.addEventListener("visibilitychange", ()=>{
+  if(document.visibilityState === "hidden") writeNow();
+});
+
+/* =========================================================
+   6. HELPERS
+   ========================================================= */
+function knownCount(list){
+  let n = 0;
+  for(let i=0;i<list.length;i++) if(status[list[i].id]==="known") n++;
+  return n;
+}
+function ringStyle(pct, colour){
+  return "background:conic-gradient(" + colour + " " + pct + "%,rgba(255,255,255,.12) 0)";
+}
+
+/* =========================================================
+   7. TABS
+   ========================================================= */
+function buildTabs(){
+  const frag = document.createDocumentFragment();
+  SECTIONS.forEach(sec=>{
+    const b = document.createElement("button");
+    b.className = "tab";
+    b.type = "button";
+    b.dataset.sec = sec.id;
+    b.setAttribute("role","tab");
+    b.innerHTML = "<span>" + sec.emoji + "</span><span>" + sec.title + "</span>";
+    frag.appendChild(b);
+  });
+  D.tabs.appendChild(frag);
+}
+function paintTabs(){
+  const kids = D.tabs.children;
+  for(let i=0;i<kids.length;i++){
+    kids[i].setAttribute("aria-selected", kids[i].dataset.sec === S.sec ? "true" : "false");
+  }
+}
+
+/* =========================================================
+   8. SIDEBAR
+   ========================================================= */
+function buildSidebar(){
+  sideRefs.clear();
+  D.topics.textContent = "";
+  const sec = SEC[S.sec];
+  const frag = document.createDocumentFragment();
+
+  frag.appendChild(makeTopic("All topics","all",true));
+  frag.appendChild(makeTopic("Review pile","review",true,"#f472b6"));
+
+  sec.units.forEach(u=>{
+    const h = document.createElement("div");
+    h.className = "utitle";
+    h.textContent = u.name;
+    frag.appendChild(h);
+    u.groups.forEach(g=>{
+      frag.appendChild(makeTopic(g.name, g.name, false));
+    });
+  });
+
+  D.topics.appendChild(frag);
+  paintSidebar();
+}
+
+function makeTopic(label, filterKey, special, colour){
+  const b = document.createElement("button");
+  b.className = "topic" + (special ? " special" : "");
+  b.type = "button";
+  b.dataset.f = filterKey;
+
+  const ring = document.createElement("span");
+  ring.className = "ring";
+
+  const nm = document.createElement("span");
+  nm.className = "nm";
+  nm.textContent = label;
+
+  const ct = document.createElement("span");
+  ct.className = "ct";
+
+  b.append(ring, nm, ct);
+  sideRefs.set(filterKey, {ring, count:ct, colour: colour || null});
+  return b;
+}
+
+function paintSidebar(){
+  const all = bySection[S.sec];
+  const allK = knownCount(all);
+  updSide("all", all.length, allK, all.length ? (allK/all.length)*100 : 0);
+
+  let revN = 0;
+  for(let i=0;i<all.length;i++) if(status[all[i].id]==="review") revN++;
+  updSide("review", revN, revN, revN ? 100 : 0);
+
+  byGroup[S.sec].forEach((list, name)=>{
+    const k = knownCount(list);
+    updSide(name, list.length, k, list.length ? (k/list.length)*100 : 0);
+  });
+
+  const kids = D.topics.children;
+  for(let i=0;i<kids.length;i++){
+    const el = kids[i];
+    if(!el.dataset) continue;
+    if(el.dataset.f === S.filter) el.setAttribute("aria-current","true");
+    else el.removeAttribute("aria-current");
+  }
+}
+function updSide(key, total, known, pct){
+  const r = sideRefs.get(key);
+  if(!r) return;
+  const colour = r.colour || "var(--accent)";
+  r.ring.style.cssText = ringStyle(pct, colour);
+  r.count.textContent = key === "review" ? String(total) : (known + "/" + total);
+}
+
+/* =========================================================
+   9. DECK
+   ========================================================= */
+function buildDeck(reset){
+  let list;
+  if(S.filter === "all"){
+    list = bySection[S.sec].slice();
+  } else if(S.filter === "review"){
+    list = bySection[S.sec].filter(c => status[c.id] === "review");
+  } else {
+    list = (byGroup[S.sec].get(S.filter) || []).slice();
+  }
+  if(S.shuffled){
+    for(let i=list.length-1;i>0;i--){
+      const j = (Math.random()*(i+1))|0;
+      const t = list[i]; list[i] = list[j]; list[j] = t;
+    }
+  }
+  S.deck = list;
+  if(reset) S.i = 0;
+  if(S.i >= list.length) S.i = Math.max(0, list.length - 1);
+  if(S.i < 0) S.i = 0;
+}
+
+/* =========================================================
+   10. RENDER CARD
+   ========================================================= */
+let lastShownId = null;
+
+function renderCard(animate){
+  const deck = S.deck;
+
+  const existingEmpty = D.cardwrap.querySelector(".empty");
+  if(deck.length === 0){
+    D.card.style.display = "none";
+    if(!existingEmpty){
+      const e = document.createElement("div");
+      e.className = "empty";
+      e.innerHTML = S.filter === "review"
+        ? "<div><h3>🎉 Review pile is empty</h3><p>Nothing marked for review yet.<br>Hit <b>Need review</b> on any card to add it here.</p></div>"
+        : "<div><h3>No cards here</h3><p>Pick another topic from the sidebar.</p></div>";
+      D.cardwrap.appendChild(e);
+    }
+    D.cnt.textContent = "0 / 0";
+    paintProgress();
+    return;
+  }
+  if(existingEmpty) existingEmpty.remove();
+  D.card.style.display = "";
+
+  const c = deck[S.i];
+  if(c.id !== lastShownId){
+    D.qt.innerHTML = c.qHtml;
+    D.at.innerHTML = c.aHtml;
+    D.bf.textContent = c.grp;
+    D.bb.textContent = c.grp + " · Answer";
+    lastShownId = c.id;
+
+    if(animate && !reducedMotion){
+      D.cin.animate(
+        [{opacity:.35, transform:"translateY(7px)"},{opacity:1, transform:"none"}],
+        {duration:150, easing:"cubic-bezier(.2,.8,.2,1)"}
+      );
+    }
+  }
+
+  D.cnt.textContent = (S.i+1) + " / " + deck.length;
+
+  const st = status[c.id];
+  const wantRev = st === "review";
+  const wantGot = st === "known";
+  if(D.revBtn.classList.contains("on") !== wantRev) D.revBtn.classList.toggle("on", wantRev);
+  if(D.gotBtn.classList.contains("on") !== wantGot) D.gotBtn.classList.toggle("on", wantGot);
+
+  paintProgress();
+}
+
+function paintProgress(){
+  const deck = S.deck;
+  const k = knownCount(deck);
+  const pct = deck.length ? (k/deck.length)*100 : 0;
+  D.pfill.style.width = pct + "%";
+  D.ptext.textContent = k + " / " + deck.length;
+
+  const sec = SEC[S.sec];
+  const label = S.filter === "all" ? "All topics"
+              : S.filter === "review" ? "Review pile"
+              : S.filter;
+  const html = sec.emoji + " <b>" + sec.title + "</b> · " + esc(label);
+  if(D.crumb.innerHTML !== html) D.crumb.innerHTML = html;
+}
+
+/* =========================================================
+   11. FLIP
+   ========================================================= */
+const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+function flip(force){
+  const want = force === undefined ? !S.flipped : !!force;
+  if(want === S.flipped) return;
+  S.flipped = want;
+  D.card.classList.toggle("flip", want);
+}
+function snapUnflip(){
+  if(!S.flipped) return;
+  D.cin.style.transition = "none";
+  S.flipped = false;
+  D.card.classList.remove("flip");
+  void D.cin.offsetWidth;
+  requestAnimationFrame(()=>{ D.cin.style.transition = ""; });
+}
+
+/* =========================================================
+   12. NAVIGATION
+   ========================================================= */
+function go(delta){
+  const n = S.deck.length;
+  if(!n) return;
+  snapUnflip();
+  S.i = (S.i + delta + n) % n;
+  save();                  // <-- remember card position
+  renderCard(true);
+}
+const next = () => go(1);
+const prev = () => go(-1);
+
+/* =========================================================
+   13. MARKING
+   ========================================================= */
+function flash(colour){
+  if(reducedMotion) return;
+  D.flash.style.color = colour;
+  D.flash.animate(
+    [{opacity:.85},{opacity:0}],
+    {duration:260, easing:"ease-out"}
+  );
+}
+
+function mark(kind){
+  const c = S.deck[S.i];
+  if(!c) return;
+
+  const cur = status[c.id];
+  if(kind === "known"){
+    if(cur === "known") delete status[c.id];
+    else status[c.id] = "known";
+  } else {
+    if(cur === "review") delete status[c.id];
+    else status[c.id] = "review";
+  }
+  save();
+
+  const isNowKnown = status[c.id] === "known";
+  flash(isNowKnown ? "#22c55e" : "#f472b6");
+
+  const wantRev = status[c.id] === "review";
+  const wantGot = status[c.id] === "known";
+  D.revBtn.classList.toggle("on", wantRev);
+  D.gotBtn.classList.toggle("on", wantGot);
+  paintSidebar();
+  paintProgress();
+
+  if(S.filter === "review" && !wantRev){
+    buildDeck(false);
+    renderCard(true);
+    return;
+  }
+
+  if(isNowKnown && S.deck.length > 1){
+    setTimeout(()=>{
+      if(S.deck[S.i] === c) next();
+    }, 130);
+  }
+}
+
+/* =========================================================
+   14. SECTION SWITCH
+   ========================================================= */
+function setSection(id){
+  if(S.sec === id) return;
+  S.sec = id;
+  S.filter = "all";
+  S.i = 0;
+  S.shuffled = false;
+  S.flipped = false;
+  lastShownId = null;
+  D.shuf.textContent = "🔀 Shuffle";
+  D.card.classList.remove("flip");
+  D.app.dataset.s = id;
+  D.logo.textContent = SEC[id].emoji;
+  save();
+
+  buildSidebar();
+  buildDeck(true);
+  paintTabs();
+  renderCard(true);
+}
+
+/* =========================================================
+   15. EVENTS
+   ========================================================= */
+D.tabs.addEventListener("click", e=>{
+  const t = e.target.closest(".tab");
+  if(t) setSection(t.dataset.sec);
+});
+
+D.topics.addEventListener("click", e=>{
+  const t = e.target.closest(".topic");
+  if(!t) return;
+  S.filter = t.dataset.f;
+  S.i = 0;
+  S.flipped = false;
+  lastShownId = null;
+  D.card.classList.remove("flip");
+  save();                  // <-- remember topic choice
+  buildDeck(true);
+  paintSidebar();
+  renderCard(true);
+  closeDrawer();
+});
+
+D.card.addEventListener("click", ()=>flip());
+
+D.flip.addEventListener("click", ()=>flip());
+D.next.addEventListener("click", next);
+D.prev.addEventListener("click", prev);
+D.gotBtn.addEventListener("click", ()=>mark("known"));
+D.revBtn.addEventListener("click", ()=>mark("review"));
+
+D.shuf.addEventListener("click", ()=>{
+  S.shuffled = !S.shuffled;
+  D.shuf.textContent = S.shuffled ? "🔀 Shuffled ✓" : "🔀 Shuffle";
+  S.i = 0;
+  S.flipped = false;
+  lastShownId = null;
+  D.card.classList.remove("flip");
+  save();                  // <-- remember shuffle state
+  buildDeck(true);
+  renderCard(true);
+});
+
+D.reset.addEventListener("click", ()=>{
+  if(!confirm("Reset all progress for every subject?")) return;
+  status = Object.create(null);
+  S.i = 0;
+  save();
+  buildDeck(true);
+  paintSidebar();
+  renderCard(true);
+});
+
+function openDrawer(){ D.side.classList.add("open"); D.bd.classList.add("on"); }
+function closeDrawer(){ D.side.classList.remove("open"); D.bd.classList.remove("on"); }
+$("menuBtn").addEventListener("click", openDrawer);
+$("closeBtn").addEventListener("click", closeDrawer);
+D.bd.addEventListener("click", closeDrawer);
+
+document.addEventListener("keydown", e=>{
+  const tag = e.target.tagName;
+  if(tag === "INPUT" || tag === "TEXTAREA") return;
+
+  switch(e.key){
+    case " ":
+    case "Enter":
+      if(tag === "BUTTON") return;
+      e.preventDefault();
+      flip();
+      break;
+    case "ArrowRight": e.preventDefault(); next(); break;
+    case "ArrowLeft":  e.preventDefault(); prev(); break;
+    case "ArrowDown":  e.preventDefault(); next(); break;
+    case "ArrowUp":    e.preventDefault(); prev(); break;
+    case "1": mark("review"); break;
+    case "2": mark("known");  break;
+    case "s": case "S": D.shuf.click(); break;
+    case "Escape": closeDrawer(); break;
+  }
+});
+
+let tx = 0, ty = 0, tracking = false;
+D.cardwrap.addEventListener("touchstart", e=>{
+  if(e.touches.length !== 1) return;
+  tx = e.touches[0].clientX;
+  ty = e.touches[0].clientY;
+  tracking = true;
+}, {passive:true});
+
+D.cardwrap.addEventListener("touchend", e=>{
+  if(!tracking) return;
+  tracking = false;
+  const t = e.changedTouches[0];
+  const dx = t.clientX - tx;
+  const dy = t.clientY - ty;
+  if(Math.abs(dx) > 55 && Math.abs(dx) > Math.abs(dy)){
+    dx < 0 ? next() : prev();
+  }
+}, {passive:true});
+
+/* =========================================================
+   16. BOOT
+   ========================================================= */
+load();
+D.app.dataset.s = S.sec;
+D.logo.textContent = SEC[S.sec].emoji;
+D.shuf.textContent = S.shuffled ? "🔀 Shuffled ✓" : "🔀 Shuffle";
+buildTabs();
+paintTabs();
+buildSidebar();
+buildDeck(false);        // <-- preserve restored index
+renderCard(false);
+</script>
+</body>
+</html>
